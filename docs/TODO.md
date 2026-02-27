@@ -56,9 +56,12 @@
 - [x] Debug door indicators removed; game starts after fonts loaded
 
 ## Phase 3 — Polish
-- [ ] Page `<title>`, meta description, Open Graph tags
-- [ ] Favicon (pixel art)
-- [ ] Entrance/exit transition effects
-- [ ] Optional: ambient sound toggle
-- [ ] Cross-browser/device QA
-- [ ] Deploy
+- [x] Meta description, Open Graph tags, Twitter Card, canonical URL
+- [x] Favicon — pixel art SVG character (`favicon.svg`)
+- [x] Cinema-bar scene transition (bars wipe in/out on building enter/exit)
+- [x] Interaction hint shows building name in gold; hides kbd on touch devices
+- [x] Cross-browser: `image-rendering` stack, `touch-action: none`, `user-select: none`, `-webkit-tap-highlight-color`, `overscroll-behavior`
+- [x] iOS: safe-area padding on exit bar, `-webkit-overflow-scrolling: touch` on panels
+- [x] Canvas: `role="application"`, `aria-label`, `tabindex`; focus returns to canvas on panel close
+- [x] `.nojekyll` added for GitHub Pages deployment
+- [ ] Deploy (Scott to push to GitHub Pages / hosting of choice)

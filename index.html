@@ -2,19 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Scott Purcival — Game Developer</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Scott Purcival is a game programmer with shipped titles on Steam, PlayStation, and PC. Explore his portfolio as a top-down pixel art village.">
+  <meta name="author" content="Scott Purcival">
+  <link rel="canonical" href="https://scott.purcival.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://scott.purcival.com/">
+  <meta property="og:title"       content="Scott Purcival — Game Developer">
+  <meta property="og:description" content="A top-down pixel art game world as a portfolio. Walk around, enter buildings, explore Scott's work.">
+  <meta property="og:image"       content="https://scott.purcival.com/assets/og-image.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Scott Purcival — Game Developer">
+  <meta name="twitter:description" content="A top-down pixel art game world as a portfolio.">
+  <meta name="twitter:image"       content="https://scott.purcival.com/assets/og-image.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <!-- ===================== TRANSITION ===================== -->
+  <div id="transition" aria-hidden="true">
+    <div class="t-bar t-top"></div>
+    <div class="t-bar t-bottom"></div>
+  </div>
+
   <!-- ===================== OVERWORLD ===================== -->
   <div id="game-container">
-    <canvas id="game-canvas"></canvas>
-    <div id="interact-hint">Press <kbd>SPACE</kbd> to enter</div>
+    <canvas id="game-canvas"
+      role="application"
+      aria-label="Portfolio game world. Use arrow keys or WASD to move, Space to enter a building."
+      tabindex="0"></canvas>
+    <div id="interact-hint" aria-live="polite">
+      Press <kbd>SPACE</kbd> to enter <span id="hint-building"></span>
+    </div>
   </div>
 
   <!-- ===================== PANELS ===================== -->

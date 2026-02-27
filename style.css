@@ -9,6 +9,10 @@ html, body {
   font-family: 'Press Start 2P', monospace;
   overflow: hidden;
   color: #fff;
+  /* Prevent pull-to-refresh and over-scroll on mobile */
+  overscroll-behavior: none;
+  /* Suppress iOS tap flash */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ============================================================
@@ -25,12 +29,17 @@ html, body {
 
 #game-canvas {
   display: block;
-  /* Internal resolution set via JS; CSS scales it up */
   width: min(100vw, 177.78vh);
   height: min(56.25vw, 100vh);
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
+  /* Pixel-perfect scaling — all major browsers */
+  image-rendering: pixelated;          /* Chrome, Edge, Safari 10+ */
+  image-rendering: crisp-edges;        /* Firefox */
+  -ms-interpolation-mode: nearest-neighbor; /* IE (legacy) */
   cursor: crosshair;
+  /* Prevent iOS scroll/zoom on touch */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Interaction hint bar */
@@ -53,6 +62,36 @@ html, body {
 }
 
 /* ============================================================
+   SCENE TRANSITION — cinema-bar wipe
+   ============================================================ */
+#transition {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.t-bar {
+  flex: 1;
+  background: #000;
+  transform: scaleY(0);
+  will-change: transform;
+}
+.t-top    { transform-origin: top center; }
+.t-bottom { transform-origin: bottom center; }
+
+#transition.closing .t-bar {
+  transform: scaleY(1);
+  transition: transform 0.18s cubic-bezier(0.4, 0, 1, 1);
+}
+#transition.opening .t-bar {
+  transform: scaleY(0);
+  transition: transform 0.22s cubic-bezier(0, 0, 0.3, 1);
+}
+
+/* ============================================================
    PANELS — full-screen interior views
    ============================================================ */
 .panel {
@@ -64,9 +103,11 @@ html, body {
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s;
+  transition: opacity 0.15s;
   z-index: 10;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  will-change: opacity;
 }
 .panel.active {
   opacity: 1;
@@ -508,6 +549,7 @@ html, body {
    ============================================================ */
 .panel-exit-bar {
   padding: 12px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
   background: rgba(0,0,0,0.8);
   text-align: center;
   position: sticky;
@@ -530,7 +572,10 @@ html, body {
    ============================================================ */
 @media (pointer: coarse) {
   #interact-hint kbd { display: none; }
-  #interact-hint::after { content: 'Tap to enter'; }
+}
+
+#hint-building {
+  color: #ffe066;
 }
 
 /* ============================================================

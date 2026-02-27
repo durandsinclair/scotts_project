@@ -39,16 +39,20 @@ That's it. No install, no server required.
 
 ---
 
-## Current phase: Phase 2 — Art pass ✓
+## Current phase: Phase 3 — Polish ✓
 
-All game mechanics, content, and art are complete.
+The site is production-ready.
 
-- Grass, cobblestone paths, and layered trees drawn programmatically
-- Five unique building facades: terracotta gallery, navy newsagency, wood notice board, green post office, stone monument with columns
-- Player character with 4-frame directional walk cycle and ground shadow
-- Interior rooms styled as distinct environments: gallery with wallpaper and parquet floor, newsagency with aged newspaper props, notice board set outdoors with sky and grass, post office with wooden counter, monument with stone-gradient plaque
+- Meta description, Open Graph, and Twitter Card tags for social sharing
+- Pixel art SVG favicon
+- Cinema-bar wipe transition when entering and exiting buildings
+- Interaction hint shows the building name in gold when the player is nearby
+- Cross-browser rendering: `image-rendering` stack covers Chrome, Firefox, Safari, and Edge
+- Mobile: `touch-action: none` prevents scroll interference, safe-area padding handles iPhone notch
+- Canvas has `role`, `aria-label`, and `tabindex` for keyboard and screen-reader accessibility
+- `.nojekyll` included for GitHub Pages deployment
 
-**Phase 3** (next): SEO meta tags, favicon, entrance/exit transitions, cross-device QA, deploy.
+**To deploy:** push to a GitHub repository and enable GitHub Pages (set source to `main` branch, root folder). No build step required — the site is static HTML.
 
 ---
 

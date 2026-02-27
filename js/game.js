@@ -151,48 +151,72 @@ function checkProximity() {
 }
 
 // ============================================================
+// SCENE TRANSITION
+// ============================================================
+
+let transitioning = false;
+const transEl = document.getElementById('transition');
+const TRANS_IN  = 200; // ms for bars to close
+const TRANS_OUT = 240; // ms for bars to open
+
+function runTransition(onMidpoint) {
+  if (transitioning) return;
+  transitioning = true;
+  transEl.classList.add('closing');
+
+  setTimeout(() => {
+    onMidpoint();
+    transEl.classList.remove('closing');
+    transEl.classList.add('opening');
+
+    setTimeout(() => {
+      transEl.classList.remove('opening');
+      transitioning = false;
+    }, TRANS_OUT);
+  }, TRANS_IN);
+}
+
+// ============================================================
 // PANEL MANAGEMENT
 // ============================================================
 
 function openPanel(panelId) {
-  if (state === STATE.PANEL) return;
+  if (state === STATE.PANEL || transitioning) return;
   state = STATE.PANEL;
   activePanel = panelId;
 
-  const el = document.getElementById(`panel-${panelId}`);
-  if (!el) return;
-
-  // Fade canvas out
-  canvas.style.transition = 'opacity 0.3s';
-  canvas.style.opacity = '0';
-
-  setTimeout(() => {
+  runTransition(() => {
+    canvas.style.opacity = '0';
+    const el = document.getElementById(`panel-${panelId}`);
+    if (!el) return;
     el.classList.add('active');
     el.removeAttribute('aria-hidden');
-    el.focus();
-  }, 300);
+    setTimeout(() => el.querySelector('.exit-btn')?.focus(), 50);
+  });
 }
 
 function closePanel() {
-  if (state !== STATE.PANEL) return;
+  if (state !== STATE.PANEL || transitioning) return;
 
-  const el = document.getElementById(`panel-${activePanel}`);
-  if (el) {
-    el.classList.remove('active');
-    el.setAttribute('aria-hidden', 'true');
-  }
+  runTransition(() => {
+    const el = document.getElementById(`panel-${activePanel}`);
+    if (el) {
+      el.classList.remove('active');
+      el.setAttribute('aria-hidden', 'true');
+    }
 
-  // Close any detail overlay
-  const detail = document.getElementById('project-detail');
-  if (detail) {
-    detail.classList.remove('active');
-    detail.setAttribute('aria-hidden', 'true');
-  }
+    const detail = document.getElementById('project-detail');
+    if (detail) {
+      detail.classList.remove('active');
+      detail.setAttribute('aria-hidden', 'true');
+    }
 
-  canvas.style.opacity = '1';
-  state = STATE.WORLD;
-  activePanel = null;
-  pendingBuildingOpen = null;
+    canvas.style.opacity = '1';
+    state = STATE.WORLD;
+    activePanel = null;
+    pendingBuildingOpen = null;
+    setTimeout(() => canvas.focus(), 50);
+  });
 }
 
 // ============================================================
@@ -265,10 +289,13 @@ function openProjectDetail(id) {
 // INTERACTION HINT UI
 // ============================================================
 
-const hintEl = document.getElementById('interact-hint');
+const hintEl          = document.getElementById('interact-hint');
+const hintBuildingEl  = document.getElementById('hint-building');
+const isTouchDevice   = window.matchMedia('(pointer: coarse)').matches;
 
 function updateHint(building) {
   if (building) {
+    hintBuildingEl.textContent = building.label;
     hintEl.classList.add('visible');
   } else {
     hintEl.classList.remove('visible');
