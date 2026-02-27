@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scott Purcival — Game Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===================== OVERWORLD ===================== -->
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+    <div id="interact-hint">Press <kbd>SPACE</kbd> to enter</div>
+  </div>
+
+  <!-- ===================== PANELS ===================== -->
+
+  <!-- Gallery: Portfolio -->
+  <div id="panel-gallery" class="panel" aria-hidden="true">
+    <div class="panel-room gallery-room">
+      <div class="room-wall">
+        <div class="frame-row">
+          <div class="frame" data-project="exodus">
+            <div class="frame-img placeholder"></div>
+            <div class="frame-label">EXODUS</div>
+          </div>
+          <div class="frame" data-project="vanguard">
+            <div class="frame-img placeholder"></div>
+            <div class="frame-label">Vanguard Exiles</div>
+          </div>
+          <div class="frame" data-project="zomboid">
+            <div class="frame-img placeholder"></div>
+            <div class="frame-label">Project Zomboid</div>
+          </div>
+          <div class="frame" data-project="sackboy">
+            <div class="frame-img placeholder"></div>
+            <div class="frame-label">Sackboy</div>
+          </div>
+        </div>
+      </div>
+      <div class="room-floor"></div>
+      <div class="panel-exit-bar">
+        <button class="exit-btn" data-panel="gallery">◀ Exit Gallery</button>
+      </div>
+    </div>
+    <!-- Project detail overlay -->
+    <div id="project-detail" class="detail-overlay" aria-hidden="true">
+      <button class="detail-close">✕</button>
+      <h2 class="detail-title"></h2>
+      <p class="detail-tech"></p>
+      <p class="detail-desc"></p>
+      <a class="detail-link" href="#" target="_blank" rel="noopener">View Project ▶</a>
+    </div>
+  </div>
+
+  <!-- Newsagency: Media -->
+  <div id="panel-news" class="panel" aria-hidden="true">
+    <div class="panel-room news-room">
+      <div class="room-wall">
+        <div class="newspaper-rack">
+          <div class="newspaper" data-media="nasa">
+            <div class="np-headline">NASA SPACE APPS</div>
+            <div class="np-sub">2017 Challenge Recognition</div>
+          </div>
+          <div class="newspaper" data-media="frogs">
+            <div class="np-headline">FROG'S PRINCESS</div>
+            <div class="np-sub">Multi-Platform Release 2020</div>
+          </div>
+          <div class="newspaper" data-media="libraries">
+            <div class="np-headline">WESTERN DOWNS</div>
+            <div class="np-sub">Libraries Educational Project 2019</div>
+          </div>
+        </div>
+      </div>
+      <div class="room-floor"></div>
+      <div class="panel-exit-bar">
+        <button class="exit-btn" data-panel="news">◀ Exit Newsagency</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notice Board: About -->
+  <div id="panel-notice" class="panel" aria-hidden="true">
+    <div class="panel-room notice-room">
+      <div class="corkboard">
+        <div class="pin-note wide">
+          <h2>G'day, I'm Scott</h2>
+          <p>Game programmer passionate about bringing worlds to life. My mantra: <em>everything is possible.</em></p>
+        </div>
+        <div class="pin-note">
+          <h3>Skills</h3>
+          <ul>
+            <li>Unreal / C++</li>
+            <li>Unity / C#</li>
+            <li>Java</li>
+            <li>HTML / JS</li>
+          </ul>
+        </div>
+        <div class="pin-note">
+          <h3>Find Me</h3>
+          <ul>
+            <li><a href="https://www.linkedin.com/in/scottpurcival" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://github.com/scottpurcival" target="_blank" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel-exit-bar">
+        <button class="exit-btn" data-panel="notice">◀ Exit Notice Board</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Office: Contact -->
+  <div id="panel-post" class="panel" aria-hidden="true">
+    <div class="panel-room post-room">
+      <div class="counter-window">
+        <div class="counter-sign">SEND A MESSAGE</div>
+        <form id="contact-form" class="mail-form">
+          <label for="contact-name">Your Name</label>
+          <input type="text" id="contact-name" name="name" required autocomplete="name">
+
+          <label for="contact-email">Your Email</label>
+          <input type="email" id="contact-email" name="email" required autocomplete="email">
+
+          <label for="contact-msg">Message</label>
+          <textarea id="contact-msg" name="message" rows="4" required></textarea>
+
+          <button type="submit" class="pixel-btn">Send Letter ✉</button>
+        </form>
+        <p id="contact-email-display" class="email-display"></p>
+      </div>
+      <div class="room-floor"></div>
+      <div class="panel-exit-bar">
+        <button class="exit-btn" data-panel="post">◀ Exit Post Office</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monument: Resume -->
+  <div id="panel-monument" class="panel" aria-hidden="true">
+    <div class="panel-room monument-room">
+      <div class="plaque">
+        <h2 class="plaque-title">SCOTT PURCIVAL</h2>
+        <p class="plaque-subtitle">Game Programmer</p>
+        <div class="timeline">
+          <div class="tl-entry">
+            <span class="tl-year">2025</span>
+            <span class="tl-event">Vanguard Exiles — Steam release (The Tea Division)</span>
+          </div>
+          <div class="tl-entry">
+            <span class="tl-year">2023</span>
+            <span class="tl-event">EXODUS — Archetype Entertainment (Unreal/C++)</span>
+          </div>
+          <div class="tl-entry">
+            <span class="tl-year">2021</span>
+            <span class="tl-event">Project Zomboid — Build 41 improvements</span>
+          </div>
+          <div class="tl-entry">
+            <span class="tl-year">2020</span>
+            <span class="tl-event">Sackboy: A Big Adventure — PS to PC port</span>
+          </div>
+          <div class="tl-entry">
+            <span class="tl-year">2020</span>
+            <span class="tl-event">Frog's Princess — multi-platform release</span>
+          </div>
+          <div class="tl-entry">
+            <span class="tl-year">2018</span>
+            <span class="tl-event">Professional diploma + first commercial release</span>
+          </div>
+          <div class="tl-entry">
+            <span class="tl-year">2017</span>
+            <span class="tl-event">NASA Space Apps Challenge recognition</span>
+          </div>
+        </div>
+      </div>
+      <div class="panel-exit-bar">
+        <button class="exit-btn" data-panel="monument">◀ Exit Monument</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/world.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
