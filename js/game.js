@@ -308,16 +308,7 @@ function gameLoop() {
   drawWorld(ctx);
   Player.draw(ctx);
 
-  // Debug: door tile indicators (remove in phase 2)
-  for (const b of BUILDINGS) {
-    ctx.strokeStyle = 'rgba(255,255,0,0.4)';
-    ctx.strokeRect(
-      b.doorTile.tx * TILE_SIZE,
-      b.doorTile.ty * TILE_SIZE,
-      TILE_SIZE, TILE_SIZE
-    );
-  }
 }
 
-// Start
-gameLoop();
+// Wait for Press Start 2P to load before starting so canvas text renders correctly
+document.fonts.ready.then(() => gameLoop());

@@ -2,30 +2,23 @@
 // PLAYER — position, movement, animation
 // ============================================================
 
-const PLAYER_SPEED = 2; // pixels per frame at 60fps
+const PLAYER_SPEED = 2;
 
 const Player = {
-  // Position in world pixels (top-left of sprite)
   x: 14 * TILE_SIZE,
   y: 8  * TILE_SIZE,
-
-  // Movement target (click/touch destination in world px)
   targetX: null,
   targetY: null,
-
-  // Direction for sprite: 'down','up','left','right'
   facing: 'down',
 
-  // Animation frame (0 or 1, toggled every N frames)
+  // 4-frame walk cycle: 0=idle, 1=left-step, 2=idle, 3=right-step
   frame: 0,
   frameTimer: 0,
-  FRAME_INTERVAL: 12, // frames between animation step
+  FRAME_INTERVAL: 10,
 
-  // Sprite size matches tile size
   w: TILE_SIZE,
   h: TILE_SIZE,
 
-  // Keyboard state
   keys: { up: false, down: false, left: false, right: false },
 
   reset() {
@@ -36,41 +29,26 @@ const Player = {
     this.facing = 'down';
   },
 
-  // Returns tile coords of player's centre
   tileCol() { return Math.floor((this.x + this.w / 2) / TILE_SIZE); },
   tileRow() { return Math.floor((this.y + this.h / 2) / TILE_SIZE); },
 
-  setMoveTarget(worldX, worldY) {
-    this.targetX = worldX;
-    this.targetY = worldY;
-  },
-
-  clearTarget() {
-    this.targetX = null;
-    this.targetY = null;
-  },
+  setMoveTarget(worldX, worldY) { this.targetX = worldX; this.targetY = worldY; },
+  clearTarget()                  { this.targetX = null;   this.targetY = null;   },
 
   update() {
     let dx = 0, dy = 0;
 
-    // --- Keyboard movement takes priority ---
     if (this.keys.left)  dx = -PLAYER_SPEED;
     if (this.keys.right) dx =  PLAYER_SPEED;
     if (this.keys.up)    dy = -PLAYER_SPEED;
     if (this.keys.down)  dy =  PLAYER_SPEED;
 
-    // Normalise diagonal
-    if (dx !== 0 && dy !== 0) {
-      dx *= 0.707;
-      dy *= 0.707;
-    }
+    if (dx !== 0 && dy !== 0) { dx *= 0.707; dy *= 0.707; }
 
-    // --- Click/touch target movement ---
     if (dx === 0 && dy === 0 && this.targetX !== null) {
       const diffX = this.targetX - (this.x + this.w / 2);
       const diffY = this.targetY - (this.y + this.h / 2);
       const dist  = Math.sqrt(diffX * diffX + diffY * diffY);
-
       if (dist < PLAYER_SPEED + 1) {
         this.clearTarget();
       } else {
@@ -81,46 +59,30 @@ const Player = {
 
     const moving = dx !== 0 || dy !== 0;
 
-    // Update facing direction
     if (Math.abs(dx) > Math.abs(dy)) {
       this.facing = dx > 0 ? 'right' : 'left';
     } else if (dy !== 0) {
       this.facing = dy > 0 ? 'down' : 'up';
     }
 
-    // Collision — try each axis independently
     if (dx !== 0) {
-      const nx = this.x + dx;
+      const nx  = this.x + dx;
       const col = Math.floor((nx + (dx > 0 ? this.w : 0)) / TILE_SIZE);
-      const row = this.tileRow();
-      if (!isTileBlocked(col, row)) {
-        this.x = nx;
-      } else {
-        this.clearTarget();
-        dx = 0;
-      }
+      if (!isTileBlocked(col, this.tileRow())) { this.x = nx; } else { this.clearTarget(); dx = 0; }
     }
     if (dy !== 0) {
-      const ny = this.y + dy;
-      const col = this.tileCol();
+      const ny  = this.y + dy;
       const row = Math.floor((ny + (dy > 0 ? this.h : 0)) / TILE_SIZE);
-      if (!isTileBlocked(col, row)) {
-        this.y = ny;
-      } else {
-        this.clearTarget();
-        dy = 0;
-      }
+      if (!isTileBlocked(this.tileCol(), row)) { this.y = ny; } else { this.clearTarget(); dy = 0; }
     }
 
-    // Clamp to world bounds
     this.x = Math.max(0, Math.min(this.x, (WORLD_COLS - 1) * TILE_SIZE));
     this.y = Math.max(0, Math.min(this.y, (WORLD_ROWS - 1) * TILE_SIZE));
 
-    // Animate walk cycle
     if (moving) {
       this.frameTimer++;
       if (this.frameTimer >= this.FRAME_INTERVAL) {
-        this.frame = 1 - this.frame;
+        this.frame = (this.frame + 1) % 4;
         this.frameTimer = 0;
       }
     } else {
@@ -130,45 +92,82 @@ const Player = {
   },
 
   draw(ctx) {
-    const x = this.x;
-    const y = this.y;
-    const w = this.w;
-    const h = this.h;
+    const x = Math.round(this.x);
+    const y = Math.round(this.y);
 
-    // Body — dark blue shirt
-    ctx.fillStyle = '#2244aa';
-    ctx.fillRect(x + 3, y + 5, w - 6, h - 5);
+    // Walk offsets — legs alternate y by 1px, opposite legs
+    const lly = this.frame === 1 ?  1 : this.frame === 3 ? -1 : 0; // left  leg
+    const rly = this.frame === 1 ? -1 : this.frame === 3 ?  1 : 0; // right leg
 
-    // Head — skin tone
-    ctx.fillStyle = '#f5c59f';
-    ctx.fillRect(x + 4, y, w - 8, 7);
+    // Ground shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.beginPath();
+    ctx.ellipse(x + 8, y + 15, 5, 2, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-    // Hair — dark brown
-    ctx.fillStyle = '#3b1f07';
-    ctx.fillRect(x + 4, y, w - 8, 3);
+    // Body (shirt)
+    ctx.fillStyle = '#2255bb';
+    ctx.fillRect(x + 4, y + 7, 8, 5);
 
-    // Eyes — direction indicator
-    ctx.fillStyle = '#000';
-    if (this.facing === 'down') {
-      ctx.fillRect(x + 5, y + 4, 2, 2);
-      ctx.fillRect(x + 9, y + 4, 2, 2);
-    } else if (this.facing === 'up') {
-      ctx.fillRect(x + 5, y + 2, 2, 2);
-      ctx.fillRect(x + 9, y + 2, 2, 2);
-    } else if (this.facing === 'right') {
-      ctx.fillRect(x + 10, y + 3, 2, 2);
+    // Arms
+    ctx.fillStyle = '#2255bb';
+    ctx.fillRect(x + 2, y + 7, 2, 4);
+    ctx.fillRect(x + 12, y + 7, 2, 4);
+    // Hands
+    ctx.fillStyle = '#f5c08a';
+    ctx.fillRect(x + 2, y + 11, 2, 2);
+    ctx.fillRect(x + 12, y + 11, 2, 2);
+
+    // Legs
+    ctx.fillStyle = '#334466';
+    ctx.fillRect(x + 5, y + 12 + lly, 3, 3);
+    ctx.fillRect(x + 8, y + 12 + rly, 3, 3);
+
+    // Shoes
+    ctx.fillStyle = '#221100';
+    if (this.frame === 0 || this.frame === 2) {
+      ctx.fillRect(x + 4, y + 15, 4, 1);
+      ctx.fillRect(x + 8, y + 15, 4, 1);
+    } else if (this.frame === 1) {
+      ctx.fillRect(x + 3, y + 15, 4, 1); // left forward
+      ctx.fillRect(x + 8, y + 14, 4, 1); // right back
     } else {
-      ctx.fillRect(x + 4, y + 3, 2, 2);
+      ctx.fillRect(x + 4, y + 14, 4, 1); // left back
+      ctx.fillRect(x + 9, y + 15, 4, 1); // right forward
     }
 
-    // Legs — walk animation
-    ctx.fillStyle = '#334';
-    if (this.frame === 0) {
-      ctx.fillRect(x + 4, y + h - 5, 3, 5);
-      ctx.fillRect(x + 9, y + h - 5, 3, 5);
+    // Head
+    if (this.facing === 'up') {
+      // Back of head — just hair
+      ctx.fillStyle = '#5c3317';
+      ctx.fillRect(x + 5, y + 1, 6, 6);
+      ctx.fillStyle = '#4a2810';
+      ctx.fillRect(x + 4, y + 4, 1, 3);
+      ctx.fillRect(x + 11, y + 4, 1, 3);
     } else {
-      ctx.fillRect(x + 3, y + h - 6, 3, 6);
-      ctx.fillRect(x + 10, y + h - 4, 3, 4);
+      // Face
+      ctx.fillStyle = '#f5c08a';
+      ctx.fillRect(x + 5, y + 2, 6, 5);
+      // Hair
+      ctx.fillStyle = '#5c3317';
+      ctx.fillRect(x + 5, y + 1, 6, 3);
+      ctx.fillRect(x + 4, y + 2, 1, 4);
+      ctx.fillRect(x + 11, y + 2, 1, 4);
+
+      // Eyes
+      ctx.fillStyle = '#1a1a1a';
+      if (this.facing === 'down') {
+        ctx.fillRect(x + 6, y + 4, 1, 1);
+        ctx.fillRect(x + 9, y + 4, 1, 1);
+      } else if (this.facing === 'right') {
+        ctx.fillRect(x + 9, y + 4, 1, 1);
+        ctx.fillStyle = '#5c3317';
+        ctx.fillRect(x + 9, y + 3, 2, 1); // brow
+      } else {
+        ctx.fillRect(x + 6, y + 4, 1, 1);
+        ctx.fillStyle = '#5c3317';
+        ctx.fillRect(x + 5, y + 3, 2, 1); // brow
+      }
     }
   },
 };

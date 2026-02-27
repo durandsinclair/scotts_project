@@ -48,12 +48,12 @@
 ---
 
 ## Phase 2 — Art pass
-- [ ] Source CC0 tilesets from Kenney.nl (Tiny Town / Tiny Dungeon)
-- [ ] Replace greybox tiles with sprite sheet rendering
-- [ ] Player walking animation (4-directional sprite frames)
-- [ ] Building sprites
-- [ ] Interior room backgrounds per panel
-- [ ] Pixel font polish on all panels
+- [x] Tiles: grass variation, cobblestone paths, layered trees (all programmatic)
+- [x] Replace greybox buildings with detailed facades (brickwork, windows, signs, doors)
+- [x] Player: 4-frame walk cycle, directional facing (including back-of-head when facing up), shadow
+- [x] Building sprites: Gallery (terracotta/gold), Newsagency (navy/awning), Notice (wood/corkboard), Post (green/seal), Monument (columns/plaque)
+- [x] Interior room backgrounds: Gallery (wallpaper+cornice), News (textured wall), Notice (outdoor sky/grass scene), Post (wood counter), Monument (stone gradient)
+- [x] Debug door indicators removed; game starts after fonts loaded
 
 ## Phase 3 — Polish
 - [ ] Page `<title>`, meta description, Open Graph tags

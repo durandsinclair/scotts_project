@@ -39,13 +39,16 @@ That's it. No install, no server required.
 
 ---
 
-## Current phase: Phase 1 — Greybox
+## Current phase: Phase 2 — Art pass ✓
 
-All game mechanics and content are wired up. Buildings, movement, collision, and all five interior panels work. Art is placeholder (coloured rectangles and text labels).
+All game mechanics, content, and art are complete.
 
-**Phase 2** (next): replace placeholder art with CC0 pixel sprites (Kenney.nl), add a proper walking animation, and polish the interior room backgrounds.
+- Grass, cobblestone paths, and layered trees drawn programmatically
+- Five unique building facades: terracotta gallery, navy newsagency, wood notice board, green post office, stone monument with columns
+- Player character with 4-frame directional walk cycle and ground shadow
+- Interior rooms styled as distinct environments: gallery with wallpaper and parquet floor, newsagency with aged newspaper props, notice board set outdoors with sky and grass, post office with wooden counter, monument with stone-gradient plaque
 
-**Phase 3** (later): sound, transitions, SEO meta tags, favicon, cross-device QA, deploy.
+**Phase 3** (next): SEO meta tags, favicon, entrance/exit transitions, cross-device QA, deploy.
 
 ---
 
